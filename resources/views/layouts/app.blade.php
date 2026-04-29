@@ -63,6 +63,7 @@
                 <ul class="space-y-4">
                     <li><a href="#" class="hover:text-white transition">Home</a></li>
                     <li><a href="#" class="hover:text-white transition">Semua Event</a></li>
+                    <li><a href="#" class="hover:text-white transition">Semua Event</a></li>
                     <li><a href="#" class="hover:text-white transition">Cara Bayar</a></li>
                 </ul>
             </div>

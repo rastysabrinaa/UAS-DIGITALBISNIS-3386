@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\EventController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -13,7 +14,8 @@ Route::get('/my-ticket', [TicketController::class, 'ticket'])->name('ticket');
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/events', [DashboardController::class, 'indexAdmin'])->name('events.index');
+    // Route::get('/events', [DashboardController::class, 'indexAdmin'])->name('events.index');
+    Route::resource('/events', AdminEventController::class);
     Route::get('/transactions', [DashboardController::class, 'transactionsAdmin'])->name('transactions.index');
 });
 
