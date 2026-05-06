@@ -47,7 +47,7 @@
 
     <!-- Footer -->
     <footer class="bg-indigo-900 text-indigo-100 py-20 px-6 mt-20">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-12">
             <div class="space-y-4 col-span-2">
                 <div class="flex items-center gap-2">
                     <div
@@ -57,6 +57,14 @@
                 </div>
                 <p class="max-w-xs text-indigo-300">Platform reservasi tiket event online terbaik untuk mahasiswa dan
                     penyelenggara profesional.</p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6">Kategori</h4>
+                <ul class="space-y-4">
+                    @foreach ($categories as $cat)
+                    <li><a href="/?category={{ $cat->slug }}" class="hover:text-white transition">{{ $cat->name }}</a></li>
+                    @endforeach
+                </ul>
             </div>
             <div>
                 <h4 class="text-white font-bold mb-6">Navigasi</h4>

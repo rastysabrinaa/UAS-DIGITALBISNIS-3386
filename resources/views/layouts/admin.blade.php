@@ -97,24 +97,24 @@ py-3 text-indigo-300 hover:text-white transition font-medium text-left">
     </aside>
 
     <main class="flex-1 p-10 overflow-y-auto w-full">
-    <!-- Header -->
-    <header class="flex justify-between items-center mb-10">
-        <div>
-            <h1 class="text-3xl font-black">@yield('page_title')</h1>
-            <p class="text-slate-500 font-medium">@yield('page_subtitle')</p>
-        </div>
-    </header>
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-10">
+            <div>
+                <h1 class="text-3xl font-black">@yield('page_title')</h1>
+                <p class="text-slate-500 font-medium">@yield('page_subtitle')</p>
+            </div>
+        </header>
 
-    @if(session('success'))
+        @if(session('success'))
         <div class="bg-green-100 text-green-700 p-4 rounded-xl mb-6 font-bold text-sm">
             {{ session('success') }}
         </div>
-    @endif
+        @endif
 
-    @yield('content')
-</main>
+        @yield('content')
+    </main>
 
-    
+
 </body>
 
 </html>
