@@ -1,5 +1,5 @@
 @extends('layouts.admin')
-@section('title', 'Kelola Event - Admin')
+@section('title', 'Kelola Parner - Admin')
 @section('page_title', 'Kelola Partner')
 @section('page_subtitle', 'Kelola keseluruhan data partner disini')
 

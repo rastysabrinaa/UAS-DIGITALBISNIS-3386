@@ -18,7 +18,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     // Route::get('/events', [DashboardController::class, 'indexAdmin'])->name('events.index');
     Route::resource('/events', AdminEventController::class);
     Route::get('/transactions', [DashboardController::class, 'transactionsAdmin'])->name('transactions.index');
-    Route::get('/partners', [PartnerController::class, 'index']);
+    Route::get('/partners', [PartnerController::class, 'index'])->name('partners.index');
+    Route::get('/partners/create', [PartnerController::class, 'create'])->name('partners.create');
+    Route::post('/partners', [PartnerController::class, 'store'])->name('partners.store');
 });
 
 
