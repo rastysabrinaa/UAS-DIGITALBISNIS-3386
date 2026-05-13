@@ -6,5 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Partners extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+        'logo_url'
+    ];
 }

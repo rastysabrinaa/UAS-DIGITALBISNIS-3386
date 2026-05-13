@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
+use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\EventController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
@@ -17,6 +18,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     // Route::get('/events', [DashboardController::class, 'indexAdmin'])->name('events.index');
     Route::resource('/events', AdminEventController::class);
     Route::get('/transactions', [DashboardController::class, 'transactionsAdmin'])->name('transactions.index');
+    Route::get('/partners', [PartnerController::class, 'index']);
 });
 
 
