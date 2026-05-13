@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Partners;
 use Illuminate\Http\Request;
 
 class PartnerController extends Controller
@@ -21,9 +22,8 @@ class PartnerController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'category_id' => 'required',
             'name' => 'required|string|max:255',
-            'foto_url' => 'required|string',
+            'logo_url' => 'required|string',
         ]);
 
         \App\Models\Partners::create($data);
