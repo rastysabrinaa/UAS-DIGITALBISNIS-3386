@@ -106,4 +106,20 @@
         </div>
     </section>
 
+    <!-- Partners Section -->
+    <section class="max-w-7xl mx-auto px-6 py-20 bg-slate-50 rounded-[3rem] mb-20">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-extrabold mb-2">Partner Resmi Kami</h2>
+            <p class="text-slate-500 font-medium">Platform AmikomEventHub didukung oleh berbagai partner terbaik.</p>
+        </div>
+        <div class="flex flex-wrap justify-center gap-8 md:gap-12 items-center">
+            @foreach($partners as $partner)
+            <div class="flex flex-col items-center justify-center p-4 grayscale hover:grayscale-0 transition duration-300">
+                <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="max-h-16 object-contain mb-2">
+                <span class="text-sm font-bold text-slate-400">{{ $partner->name }}</span>
+            </div>
+            @endforeach
+        </div>
+    </section>
+
 @endsection

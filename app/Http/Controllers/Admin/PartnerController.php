@@ -8,8 +8,14 @@ use Illuminate\Http\Request;
 
 class PartnerController extends Controller
 {
-    public function index() {
-        $partners = \App\Models\Partners::paginate(10);
+    public function index(Request $request) {
+        $query = \App\Models\Partners::query();
+        
+        if ($request->has('search') && $request->search != '') {
+            $query->where('name', 'LIKE', '%' . $request->search . '%');
+        }
+        
+        $partners = $query->paginate(10);
         
         return view('admin.partners.index', compact('partners'));
 
@@ -29,5 +35,26 @@ class PartnerController extends Controller
         \App\Models\Partners::create($data);
 
         return redirect()->route('admin.partners.index')->with('success', 'Data Partner berhasil ditambahkan.');
+    }
+
+    public function edit(\App\Models\Partners $partner) {
+        return view('admin.partners.edit', compact('partner'));
+    }
+
+    public function update(Request $request, \App\Models\Partners $partner) {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'logo_url' => 'required|string',
+        ]);
+
+        $partner->update($data);
+
+        return redirect()->route('admin.partners.index')->with('success', 'Data Partner berhasil diperbarui.');
+    }
+
+    public function destroy(\App\Models\Partners $partner) {
+        $partner->delete();
+
+        return redirect()->route('admin.partners.index')->with('success', 'Data Partner berhasil dihapus.');
     }
 }

@@ -10,6 +10,7 @@ class HomeController extends Controller
 {
     public function index(Request $request) {
         $categories = Category::all();
+        $partners = \App\Models\Partners::all();
 
         $query = Event::with('category')->where('date','>=',now())->orderBy('date','asc');
 
@@ -21,6 +22,6 @@ class HomeController extends Controller
 
         $events = $query->get();
 
-        return view('welcome', compact('events', 'categories'));
+        return view('welcome', compact('events', 'categories', 'partners'));
     }
 }
