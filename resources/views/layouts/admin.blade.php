@@ -18,8 +18,7 @@
 
 <body class="bg-slate-50 text-slate-900 flex min-h-screen">
     <!-- Sidebar -->
-    <aside class="w-64 bg-indigo-900 text-indigo-100 flex flex-col p-6 space-y-8
-sticky top-0 h-screen">
+    <aside class="w-64 bg-indigo-900 text-indigo-100 flex flex-col p-6 space-y-8 sticky top-0 h-screen">
         <div class="flex items-center gap-3">
 
             <div class="w-10 h-10 bg-white rounded-xl flex items-center
@@ -92,15 +91,14 @@ request()->routeIs('admin.partners.*') ? 'text-indigo-300' :
         </nav>
 
         <div class="pt-6 border-t border-indigo-800">
-            <form action="#" method="POST">
+            <form action="{{ route('admin.logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="w-full flex items-center gap-3 px-4
-py-3 text-indigo-300 hover:text-white transition font-medium text-left">
+                <button type="submit"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-indigo-300 hover:text-white transition font-medium text-left">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0
-01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                        </path>
                     </svg>
                     Keluar
                 </button>
