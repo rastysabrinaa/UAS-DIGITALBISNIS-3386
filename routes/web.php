@@ -19,7 +19,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::middleware(['auth', 'admin'])->group(function () {
-        Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         // Route::get('/events', [DashboardController::class, 'indexAdmin'])->name('events.index');
         Route::resource('/events', AdminEventController::class);
         Route::get('/transactions', [DashboardController::class, 'transactionsAdmin'])->name('transactions.index');
@@ -29,13 +29,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 });
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/event/1', [EventController::class, 'show'])->name('events.show');
+Route::get('/event/{event}', [EventController::class, 'show'])->name('events.show');
 Route::get('/checkout', [EventController::class, 'checkout'])->name('checkout');
 Route::get('/my-ticket', [TicketController::class, 'ticket'])->name('ticket');
 
 // Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 // });
-
 
 Route::get('/profil', function() {
     return view('profil');

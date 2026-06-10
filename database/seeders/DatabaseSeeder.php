@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\User::create([
             'name' => 'Admin Amikom',
             'email' => 'admin@amikom.ac.id',
-            'password' => Hash::make('admin123'),
+            'password' => bcrypt('password'),
             'role' => 'admin',
         ]);
 

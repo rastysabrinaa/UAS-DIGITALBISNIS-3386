@@ -38,8 +38,13 @@ class EventController extends Controller
             'date' => 'required|date',
             'location' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'stock' => 'required|numeric'
+            'stock' => 'required|numeric',
+            'poster' => 'nullable|image|max:2048'
         ]);
+
+        if ($request->hasFile('poster')) {
+            $data['poster_path'] = $request->file('poster')->store('posters', 'public');
+        }
 
         \App\Models\Event::create($data);
 
@@ -51,7 +56,9 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        //
+        $categories = \App\Models\Category::all();
+
+        return view('event-detail', compact('categories', 'event'));
     }
 
     /**
@@ -75,8 +82,17 @@ class EventController extends Controller
             'date' => 'required|date',
             'location' => 'required|string|max:255',
             'price' => 'required|numeric',
-            'stock' => 'required|numeric'
+            'stock' => 'required|numeric',
+            'poster' => 'nullable|image|max:2048'
         ]);
+
+        if ($request->hasFile('poster')) {
+            if ($event->poster_path) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($event->poster_path);
+            }
+
+            $data['poster_path'] = $request->file('poster')->store('posters', 'public');
+        }
 
         $event->update($data);
 
