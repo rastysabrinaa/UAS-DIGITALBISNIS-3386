@@ -24,7 +24,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('/events', AdminEventController::class);
         Route::get('/transactions', [DashboardController::class, 'transactionsAdmin'])->name('transactions.index');
         Route::resource('/partners', PartnerController::class);
-        Route::resource('/categories', \App\Http\Controllers\Admin\CategoryController::class);    
+        Route::resource('/categories', \App\Http\Controllers\Admin\CategoryController::class);
+        Route::get('transactions', [\App\Http\Controllers\Admin\TransactionController::class, 'index'])->name('transactions.index');    
     });
 });
 
@@ -32,7 +33,8 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/event/{event}', [EventController::class, 'show'])->name('events.show');
 Route::get('/checkout', [EventController::class, 'checkout'])->name('checkout');
 Route::get('/my-ticket', [TicketController::class, 'ticket'])->name('ticket');
-
+Route::get('/checkout/{event}', [App\Http\Controllers\CheckoutController::class, 'create'])->name('checkout.create');
+Route::post('/checkout/{event}', [App\Http\Controllers\CheckoutController::class, 'store'])->name('checkout.store');
 // Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 // });
 
