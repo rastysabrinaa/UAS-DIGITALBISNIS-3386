@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('organizer_id')->nullable()->constrained('users')->cascadeOnDelete(); // <- Ditambahkan di sini
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->string('title');
+            $table->string('slug')->nullable(); // Menyesuaikan query insert kamu
             $table->text('description')->nullable();
             $table->dateTime('date');
             $table->string('location');

@@ -3,24 +3,34 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
 use App\Models\Event;
+use App\Models\Partners;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index(Request $request) {
+    public function index(Request $request) 
+    {
         $categories = Category::all();
-        $partners = \App\Models\Partners::all();
+        $partners = Partners::all();
 
-        $query = Event::with('category')->where('date','>=',now())->orderBy('date','asc');
+        // 1. Inisialisasi query tanpa membatasi tanggal (agar event berlalu tetap tampil)
+        $query = Event::with('category');
 
-        if ($request->has('category') && $request->category != "") {
-            $query->whereHas('category', function($q) use ($request) {
+        // 2. Filter berdasarkan slug kategori jika ada query string ?category=...
+        if ($request->filled('category')) {
+            $query->whereHas('category', function ($q) use ($request) {
                 $q->where('slug', $request->category);
             });
         }
 
-        $events = $query->get();
+        // 3. Pengurutan Pintar:
+        // - Event yang AKAN DATANG ditaruh di paling atas (diurutkan dari tanggal terdekat)
+        // - Event yang SUDAH SELESAI ditaruh di bawahnya (diurutkan dari yang baru selesai)
+        $events = $query->orderByRaw("CASE WHEN date >= NOW() THEN 0 ELSE 1 END")
+                       ->orderByRaw("CASE WHEN date >= NOW() THEN date END ASC")
+                       ->orderByRaw("CASE WHEN date < NOW() THEN date END DESC")
+                       ->get();
 
         return view('welcome', compact('events', 'categories', 'partners'));
     }

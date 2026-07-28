@@ -8,12 +8,12 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    // 1. Fungsi menampilkan halaman view formulir
+    // 1. Tampilkan Formulir Login
     public function showLogin() {
         return view('admin.auth.login');
     }
 
-    // 2. Fungsi memproses validasi Submit Log In
+    // 2. Memproses Submit Login
     public function login(Request $request) {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -21,8 +21,33 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+
+            // Cek Status Approval khusus untuk Organizer
+            if ($user->role === 'organizer' && $user->status !== 'approved') {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'email' => 'Akun Kepanitiaan/HIMA Anda belum disetujui atau ditolak oleh Superadmin.',
+                ]);
+            }
+
+            // Regenerasi Session demi Keamanan
             $request->session()->regenerate();
-            return redirect()->route('admin.dashboard'); // Arahkan ke rute dashboard
+
+            // REDIRECT BERDASARKAN ROLE
+            if ($user->role === 'superadmin') {
+                return redirect()->route('admin.superadmin.dashboard');
+            }
+
+            if ($user->role === 'organizer') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            // Fallback jika ada role lain (misal user umum / pembeli)
+            return redirect()->route('home');
         }
 
         return back()->withErrors([
@@ -30,12 +55,11 @@ class AuthController extends Controller
         ]);
     }
 
-    // 3. Fungsi memroses Log Out (Keluar)
+    // 3. Memproses Log Out
     public function logout(Request $request) {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect()->route('admin.login');
     }
 }
-
