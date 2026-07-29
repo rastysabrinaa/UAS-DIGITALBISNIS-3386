@@ -9,8 +9,8 @@
         @forelse($tickets as $ticket)
             <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden flex flex-col hover:shadow-lg transition">
                 <div class="h-40 bg-indigo-50 relative">
-                    @if($ticket->event && $ticket->event->banner)
-                        <img src="{{ asset('storage/' . $ticket->event->banner) }}" class="w-full h-full object-cover" alt="Banner">
+                    @if($ticket->event && $ticket->event->poster_path)
+                        <img src="{{ Str::startsWith($ticket->event->poster_path, 'http') ? $ticket->event->poster_path : asset('storage/' . $ticket->event->poster_path) }}" class="w-full h-full object-cover" alt="Banner">
                     @else
                         <div class="w-full h-full flex items-center justify-center bg-slate-800 text-white font-bold text-xl px-4 text-center">
                             {{ $ticket->event->title ?? 'Acara Tidak Ditemukan' }}

@@ -20,7 +20,7 @@
 
     @php
         $isPast = \Carbon\Carbon::parse($event->date)->isPast();
-        $imagePath = $event->poster_path ?? $event->banner;
+        $imagePath = $event->poster_path ?? null;
     @endphp
 
     {{-- INFORMASI EVENT --}}
@@ -28,8 +28,8 @@
         <div class="col-lg-8">
             <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
                 {{-- Banner/Gambar Event --}}
-                @if($imagePath && Storage::disk('public')->exists($imagePath))
-                    <img src="{{ asset('storage/' . $imagePath) }}" class="card-img-top {{ $isPast ? 'grayscale' : '' }}" alt="{{ $event->title }}" style="max-height: 420px; object-fit: cover;">
+                @if($imagePath)
+                    <img src="{{ Str::startsWith($imagePath, 'http') ? $imagePath : asset('storage/' . $imagePath) }}" class="card-img-top {{ $isPast ? 'grayscale' : '' }}" alt="{{ $event->title }}" style="max-height: 420px; object-fit: cover;">
                 @else
                     <div class="bg-dark text-white text-center py-5 rounded-top">
                         <h3 class="mb-0 fw-bold">{{ $event->title }}</h3>

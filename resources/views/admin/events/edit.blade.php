@@ -98,19 +98,19 @@
         <div>
             <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Banner / Poster Event (Opsional)</label>
             
-            @if($event->banner)
+            @if($event->poster_path)
                 <div class="mb-3 flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                    <img src="{{ asset('storage/' . $event->banner) }}" alt="Preview Banner" class="w-20 h-20 object-cover rounded-xl">
+                    <img src="{{ Str::startsWith($event->poster_path, 'http') ? $event->poster_path : asset('storage/' . $event->poster_path) }}" alt="Preview Banner" class="w-20 h-20 object-cover rounded-xl">
                     <div class="text-sm">
                         <p class="font-bold text-slate-700">Banner Saat Ini</p>
-                        <a href="{{ asset('storage/' . $event->banner) }}" target="_blank" class="text-indigo-600 hover:underline font-medium text-xs">Lihat Gambar Penuh ↗</a>
+                        <a href="{{ Str::startsWith($event->poster_path, 'http') ? $event->poster_path : asset('storage/' . $event->poster_path) }}" target="_blank" class="text-indigo-600 hover:underline font-medium text-xs">Lihat Gambar Penuh ↗</a>
                     </div>
                 </div>
             @endif
 
-            <input type="file" name="banner" accept="image/*" class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium">
+            <input type="file" name="poster_path" accept="image/*" class="w-full px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium">
             <span class="text-xs text-slate-400 mt-1 block">Biarkan kosong jika tidak ingin mengganti banner.</span>
-            @error('banner') 
+            @error('poster_path') 
                 <span class="text-red-500 text-sm mt-1 block">{{ $message }}</span> 
             @enderror
         </div>

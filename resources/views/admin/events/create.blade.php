@@ -129,12 +129,12 @@ $message }}</span> @enderror
 
 tracking-wide">Poster Event (Opsional)</label>
 
-            <input type="file" name="poster" accept="image/*" class="w-full px-5
+            <input type="file" name="poster_path" accept="image/*" class="w-full px-5
 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4
 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition
 font-medium">
 
-            @error('poster') <span class="text-red-500 text-sm mt-1">{{ $message
+            @error('poster_path') <span class="text-red-500 text-sm mt-1">{{ $message
 
 }}</span> @enderror
         </div>

@@ -27,8 +27,8 @@
         {{-- KOLOM UTAMA (GAMBAR & DESKRIPSI) --}}
         <div class="lg:col-span-2 space-y-10">
             <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
-                @if($event->banner)
-                    <img src="{{ asset('storage/' . $event->banner) }}" class="w-full h-[400px] object-cover" alt="{{ $event->title }}">
+                @if($event->poster_path)
+                    <img src="{{ Str::startsWith($event->poster_path, 'http') ? $event->poster_path : asset('storage/' . $event->poster_path) }}" class="w-full h-[400px] object-cover" alt="{{ $event->title }}">
                 @else
                     <div class="w-full h-[400px] bg-slate-900 flex items-center justify-center text-white">
                         <h3 class="text-4xl font-extrabold px-6 text-center leading-tight">{{ $event->title }}</h3>

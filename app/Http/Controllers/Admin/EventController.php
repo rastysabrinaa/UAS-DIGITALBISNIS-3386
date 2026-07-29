@@ -42,16 +42,16 @@ class EventController extends Controller
             'location'    => 'required|string|max:255',
             'price'       => 'required|numeric|min:0',
             'stock'       => 'required|integer|min:0', // Diubah ke min:0 agar bisa set stok 0
-            'banner'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'poster_path' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($request->title);
         $validated['organizer_id'] = auth()->id();
 
-        // Upload banner jika ada
-        if ($request->hasFile('banner')) {
-            $uploadedFileUrl = cloudinary()->upload($request->file('banner')->getRealPath())->getSecurePath();
-            $validated['banner'] = $uploadedFileUrl;
+        // Upload poster_path jika ada
+        if ($request->hasFile('poster_path')) {
+            $uploadedFileUrl = cloudinary()->upload($request->file('poster_path')->getRealPath())->getSecurePath();
+            $validated['poster_path'] = $uploadedFileUrl;
         }
 
         Event::create($validated);
@@ -90,15 +90,15 @@ class EventController extends Controller
             'location'    => 'required|string|max:255',
             'price'       => 'required|numeric|min:0',
             'stock'       => 'required|integer|min:0', // Diubah ke min:0
-            'banner'      => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'poster_path' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
         ]);
 
         $validated['slug'] = Str::slug($request->title);
 
-        // Jika mengunggah banner baru, hapus banner lama dan upload ke Cloudinary
-        if ($request->hasFile('banner')) {
-            $uploadedFileUrl = cloudinary()->upload($request->file('banner')->getRealPath())->getSecurePath();
-            $validated['banner'] = $uploadedFileUrl;
+        // Jika mengunggah poster_path baru, upload ke Cloudinary
+        if ($request->hasFile('poster_path')) {
+            $uploadedFileUrl = cloudinary()->upload($request->file('poster_path')->getRealPath())->getSecurePath();
+            $validated['poster_path'] = $uploadedFileUrl;
         }
 
         // Eksekusi Update ke Database
@@ -109,13 +109,13 @@ class EventController extends Controller
     }
 
     /**
-     * Menghapus event beserta banner-nya.
+     * Menghapus event beserta poster_path-nya.
      */
     public function destroy(Event $event)
     {
-        // Hapus file banner dari storage jika ada
-        if ($event->banner) {
-            Storage::disk('public')->delete($event->banner);
+        // Hapus file poster_path dari storage jika ada (optional since we use cloudinary mostly)
+        if ($event->poster_path && !Str::startsWith($event->poster_path, 'http')) {
+            Storage::disk('public')->delete($event->poster_path);
         }
 
         $event->delete();

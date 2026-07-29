@@ -17,12 +17,11 @@ class Event extends Model
         'title',
         'slug',
         'description',
-        'banner',
+        'poster_path',
         'date',
         'location',
         'price',
         'stock',
-        'banner',
     ];
 
     protected $casts = [
