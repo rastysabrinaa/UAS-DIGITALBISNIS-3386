@@ -185,7 +185,15 @@
                 </div>
 
                 <div class="mt-10 pt-8 border-t border-slate-100">
-                    @if(($event->stock ?? 0) > 0)
+                    @php
+                        $isPast = \Carbon\Carbon::parse($event->date)->isPast();
+                    @endphp
+                    
+                    @if($isPast)
+                        <button class="w-full py-5 bg-slate-200 text-slate-500 rounded-2xl font-black text-xl cursor-not-allowed" disabled>
+                            Acara Selesai
+                        </button>
+                    @elseif(($event->stock ?? 0) > 0)
                         <a href="{{ route('checkout.create', $event->id) }}" class="block w-full py-5 text-center bg-indigo-600 text-white rounded-2xl font-black text-xl shadow-xl shadow-indigo-200 hover:bg-indigo-700 active:scale-95 transition-all">
                             Beli Tiket Sekarang
                         </a>

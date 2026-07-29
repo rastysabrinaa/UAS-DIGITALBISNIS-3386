@@ -41,4 +41,12 @@ class OrganizerController extends Controller
             'recentTransactions'
         ));
     }
+
+    public function showProfile($id)
+    {
+        $organizer = \App\Models\User::where('role', 'organizer')->findOrFail($id);
+        $events = Event::where('organizer_id', $id)->with('category')->latest()->get();
+
+        return view('organizer.profile', compact('organizer', 'events'));
+    }
 }

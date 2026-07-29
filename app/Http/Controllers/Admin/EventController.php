@@ -50,7 +50,7 @@ class EventController extends Controller
 
         // Upload poster_path jika ada
         if ($request->hasFile('poster_path')) {
-            $uploadedFileUrl = cloudinary()->upload($request->file('poster_path')->getRealPath())->getSecurePath();
+            $uploadedFileUrl = cloudinary()->uploadApi()->upload($request->file('poster_path')->getRealPath())['secure_url'];
             $validated['poster_path'] = $uploadedFileUrl;
         }
 
@@ -97,7 +97,7 @@ class EventController extends Controller
 
         // Jika mengunggah poster_path baru, upload ke Cloudinary
         if ($request->hasFile('poster_path')) {
-            $uploadedFileUrl = cloudinary()->upload($request->file('poster_path')->getRealPath())->getSecurePath();
+            $uploadedFileUrl = cloudinary()->uploadApi()->upload($request->file('poster_path')->getRealPath())['secure_url'];
             $validated['poster_path'] = $uploadedFileUrl;
         }
 

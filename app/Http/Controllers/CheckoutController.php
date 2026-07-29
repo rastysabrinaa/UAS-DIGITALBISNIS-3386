@@ -16,6 +16,11 @@ class CheckoutController extends Controller
 {
     public function create(Event $event)
     {
+        // Cegah akses form checkout jika event sudah selesai
+        if (\Carbon\Carbon::parse($event->date)->isPast()) {
+            return redirect()->route('events.show', $event->id)->with('error', 'Pendaftaran tidak dapat dilakukan karena event sudah selesai.');
+        }
+
         // Mengambil daftar kategori untuk keperluan menu footer
         $categories = Category::all();
 
@@ -31,7 +36,11 @@ class CheckoutController extends Controller
             'customer_phone' => 'required|string|max:20',
         ]);
 
-        // 2. Cegah Check-out Jika Tiket Habis
+        // 2. Cegah Check-out Jika Tiket Habis atau Event Selesai
+        if (\Carbon\Carbon::parse($event->date)->isPast()) {
+            return back()->with('error', 'Mohon maaf, pendaftaran ditutup karena event sudah selesai.');
+        }
+
         if ($event->stock <= 0) {
             return back()->with('error', 'Mohon maaf, tiket untuk acara ini sudah habis.');
         }
