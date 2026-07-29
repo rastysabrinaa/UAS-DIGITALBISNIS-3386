@@ -20,7 +20,13 @@ class EventController extends Controller
      */
     public function myTickets()
     {
-        // Kode untuk menampilkan tiket user yang sedang login
-        return view('tickets.index');
+        // Ambil tiket milik user yang sedang login
+        $tickets = \App\Models\Transaction::with('event')
+            ->where('customer_email', auth()->user()->email)
+            ->whereIn('status', ['success', 'settlement', 'capture'])
+            ->latest()
+            ->get();
+            
+        return view('tickets.index', compact('tickets'));
     }
 }
