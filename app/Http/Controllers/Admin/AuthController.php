@@ -39,7 +39,15 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // REDIRECT BERDASARKAN ROLE
-            if (in_array($userRole, ['admin', 'superadmin', 'organizer'], true)) {
+            if ($userRole === 'superadmin') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            if ($userRole === 'organizer') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            if ($userRole === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
 
