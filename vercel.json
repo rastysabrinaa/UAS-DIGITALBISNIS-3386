@@ -1,7 +1,7 @@
 {
   "version": 2,
-  "installCommand": "composer install --no-interaction --prefer-dist && npm install",
-  "buildCommand": "php artisan config:cache && php artisan route:cache && php artisan view:cache && npm run build",
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
   "outputDirectory": "public",
   "functions": {
     "api/index.php": {
