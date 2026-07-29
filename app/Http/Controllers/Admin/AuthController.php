@@ -22,9 +22,10 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+            $userRole = strtolower(trim((string) $user->role));
 
             // Cek Status Approval khusus untuk Organizer
-            if ($user->role === 'organizer' && $user->status !== 'approved') {
+            if ($userRole === 'organizer' && ($user->status ?? 'pending') !== 'approved') {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
@@ -38,11 +39,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             // REDIRECT BERDASARKAN ROLE
-            if ($user->role === 'superadmin') {
-                return redirect()->route('admin.superadmin.dashboard');
-            }
-
-            if ($user->role === 'organizer') {
+            if (in_array($userRole, ['admin', 'superadmin', 'organizer'], true)) {
                 return redirect()->route('admin.dashboard');
             }
 

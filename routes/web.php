@@ -79,8 +79,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('login', [AuthController::class, 'login'])->name('login.post');
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
-    // 1. DASHBOARD BERSAMA (Bisa diakses Organizer & Superadmin)
-    Route::middleware(['auth', 'role:organizer,superadmin'])->group(function () {
+    Route::get('/superadmin-dashboard', [DashboardController::class, 'index'])->name('superadmin.dashboard');
+
+    // 1. DASHBOARD BERSAMA (Bisa diakses Admin, Organizer & Superadmin)
+    Route::middleware(['auth', 'role:admin,organizer,superadmin'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('/events', AdminEventController::class);
         Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');

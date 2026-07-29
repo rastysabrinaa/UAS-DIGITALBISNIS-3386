@@ -62,7 +62,8 @@ class SocialiteController extends Controller
             }
 
             // --- REDIRECT CERDAS BERDASARKAN ROLE ---
-            if (in_array($user->role, ['admin', 'organizer', 'superadmin'])) {
+            $userRole = strtolower(trim((string) $user->role));
+            if (in_array($userRole, ['admin', 'organizer', 'superadmin'], true)) {
                 return redirect()->intended('/admin/dashboard');
             }
 
