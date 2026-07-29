@@ -32,15 +32,41 @@
             <span class="text-xl font-bold tracking-tight">AmikomEventHub</span>
         </div>
         <div class="hidden md:flex gap-8 font-medium">
-            <a href="#" class="text-indigo-600">Jelajahi</a>
-            <a href="#" class="hover:text-indigo-600 transition">Kategori</a>
-            <a href="#" class="hover:text-indigo-600 transition">Tentang Kami</a>
+            <a href="/" class="hover:text-indigo-600 transition">Beranda</a>
+            <a href="/#events" class="hover:text-indigo-600 transition">Jelajahi Event</a>
         </div>
-        <!-- <div class="flex gap-3">
-            <button class="px-5 py-2.5 rounded-xl font-semibold hover:bg-slate-200 transition">Login</button>
-            <button
-                class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition">Daftar</button>
-        </div> -->
+        <div class="flex gap-3 items-center">
+            @auth
+                <div class="relative group">
+                    <button class="px-5 py-2.5 bg-slate-100 rounded-xl font-semibold hover:bg-slate-200 transition flex items-center gap-2">
+                        {{ Auth::user()->name }}
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-slate-100 hidden group-hover:block z-50">
+                        <div class="p-2 space-y-1">
+                            @if(Auth::user()->role === 'superadmin' || (Auth::user()->role === 'organizer' && Auth::user()->status === 'approved'))
+                                <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">Dashboard Admin</a>
+                            @elseif(Auth::user()->role === 'organizer' && Auth::user()->status === 'pending')
+                                <span class="block px-4 py-2 text-sm text-amber-600 font-medium">⏳ Menunggu Persetujuan</span>
+                            @elseif(Auth::user()->role === 'user')
+                                <form action="{{ route('apply.organizer') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">Ajukan sbg Organizer</button>
+                                </form>
+                            @endif
+                            <a href="{{ route('tickets.index') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">Tiket Saya</a>
+                            <form action="{{ route('admin.logout') }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg">Logout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @else
+                <a href="{{ route('admin.login') }}" class="px-5 py-2.5 rounded-xl font-semibold hover:bg-slate-200 transition">Login</a>
+                <a href="{{ route('auth.google') }}" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition">Daftar</a>
+            @endauth
+        </div>
     </nav>
 
     @yield('content')

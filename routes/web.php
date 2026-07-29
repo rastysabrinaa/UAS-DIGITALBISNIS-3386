@@ -68,6 +68,18 @@ Route::middleware(['auth'])->group(function () {
 
     // Review Event
     Route::post('/events/{eventId}/reviews', [ReviewController::class, 'store'])->name('events.reviews.store');
+
+    // Pengajuan Organizer
+    Route::post('/apply-organizer', function () {
+        $user = auth()->user();
+        if ($user->role === 'user') {
+            $user->role = 'organizer';
+            $user->status = 'pending';
+            $user->save();
+            return back()->with('success', 'Pengajuan menjadi organizer berhasil dikirim dan menunggu persetujuan admin.');
+        }
+        return back()->with('error', 'Gagal mengajukan.');
+    })->name('apply.organizer');
 });
 
 // ==================== DASHBOARD PANEL (ADMIN / ORGANIZER / SUPERADMIN) ====================
