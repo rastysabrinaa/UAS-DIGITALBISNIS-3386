@@ -41,7 +41,7 @@ class ReviewController extends Controller
         Review::create([
             'user_id'      => auth()->id(),
             'event_id'     => $event->id,
-            'organizer_id' => $event->organizer_id ?? $event->user_id, // Fallback jika organizer_id null
+            'organizer_id' => $event->organizer_id ?? 1, // Fallback ke Superadmin/ID 1 jika tidak ada organizer
             'rating'       => $request->rating,
             'comment'      => $request->comment,
         ]);

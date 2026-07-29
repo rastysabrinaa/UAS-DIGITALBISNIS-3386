@@ -21,6 +21,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS in production or if behind a proxy
+        if (config('app.env') === 'production' || request()->header('x-forwarded-proto') === 'https') {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
         // Bagikan variabel $categories secara otomatis ke view layouts.app
         View::composer('layouts.app', function ($view) {
             $view->with('categories', Category::all());

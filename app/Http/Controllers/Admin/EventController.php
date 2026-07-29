@@ -50,7 +50,8 @@ class EventController extends Controller
 
         // Upload banner jika ada
         if ($request->hasFile('banner')) {
-            $validated['banner'] = $request->file('banner')->store('banners', 'public');
+            $uploadedFileUrl = cloudinary()->upload($request->file('banner')->getRealPath())->getSecurePath();
+            $validated['banner'] = $uploadedFileUrl;
         }
 
         Event::create($validated);
@@ -94,12 +95,10 @@ class EventController extends Controller
 
         $validated['slug'] = Str::slug($request->title);
 
-        // Jika mengunggah banner baru, hapus banner lama dari storage
+        // Jika mengunggah banner baru, hapus banner lama dan upload ke Cloudinary
         if ($request->hasFile('banner')) {
-            if ($event->banner) {
-                Storage::disk('public')->delete($event->banner);
-            }
-            $validated['banner'] = $request->file('banner')->store('banners', 'public');
+            $uploadedFileUrl = cloudinary()->upload($request->file('banner')->getRealPath())->getSecurePath();
+            $validated['banner'] = $uploadedFileUrl;
         }
 
         // Eksekusi Update ke Database
