@@ -14,10 +14,6 @@ class RoleMiddleware
             return redirect()->route('admin.login');
         }
 
-        if ($request->is('admin/*') && !$request->secure() && app()->environment('production')) {
-            return redirect()->secure($request->getRequestUri());
-        }
-
         $user = auth()->user();
         $userRole = strtolower(trim((string) $user->role));
         $allowedRoles = array_map(fn ($role) => strtolower(trim((string) $role)), $roles);
