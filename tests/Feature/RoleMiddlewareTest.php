@@ -10,10 +10,10 @@ class RoleMiddlewareTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_admin_role_can_access_admin_dashboard(): void
+    public function test_organizer_role_can_access_admin_dashboard(): void
     {
         $user = User::factory()->create([
-            'role' => 'admin',
+            'role' => 'organizer',
             'status' => 'approved',
         ]);
 

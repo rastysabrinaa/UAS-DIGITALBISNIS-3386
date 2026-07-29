@@ -18,7 +18,7 @@ class RoleMiddleware
         $userRole = strtolower(trim((string) $user->role));
         $allowedRoles = array_map(fn ($role) => strtolower(trim((string) $role)), $roles);
 
-        // Cek apakah role user ada dalam parameter yang diizinkan
+        // Hanya role yang sah yang boleh mengakses area admin
         if (!in_array($userRole, $allowedRoles, true)) {
             abort(403, 'Akses Ditolak: Anda tidak memiliki izin ke halaman ini.');
         }

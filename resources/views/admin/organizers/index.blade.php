@@ -72,7 +72,7 @@
                             <td class="py-4 px-6">
                                 <div class="flex items-center justify-center gap-2">
                                     {{-- Form Setujui --}}
-                                    <form action="{{ route('admin.organizers.updateStatus', $organizer->id) }}" method="POST">
+                                    <form action="{{ url('/admin/organizers/' . $organizer->id . '/status') }}" method="POST">
                                         @csrf
                                         @method('PATCH')
                                         <input type="hidden" name="status" value="approved">
@@ -85,7 +85,7 @@
                                     </form>
 
                                     {{-- Form Tolak --}}
-                                    <form action="{{ route('admin.organizers.updateStatus', $organizer->id) }}" method="POST">
+                                    <form action="{{ url('/admin/organizers/' . $organizer->id . '/status') }}" method="POST">
                                         @csrf
                                         @method('PATCH')
                                         <input type="hidden" name="status" value="rejected">

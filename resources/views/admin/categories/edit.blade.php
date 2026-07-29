@@ -6,7 +6,7 @@
 @section('content')
 <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm max-w-3xl">
 
-    <form action="{{ route('admin.categories.update', $category->id) }}" method="POST" class="space-y-6">
+    <form action="{{ url('/admin/categories/' . $category->id) }}" method="POST" class="space-y-6">
         @csrf
         @method('PUT')
 
