@@ -62,8 +62,8 @@
                             <td class="px-6 py-5 text-sm text-slate-500">
                                 {{ $v->event ? $v->event->title : 'Semua Event' }}
                             </td>
-                            <td class="px-6 py-5 text-sm {{ $v->valid_until && \Carbon\Carbon::parse($v->valid_until)->isPast() ? 'text-red-500 font-bold' : 'text-slate-500' }}">
-                                {{ $v->valid_until ? \Carbon\Carbon::parse($v->valid_until)->format('d M Y, H:i') : 'Tanpa Batas' }}
+                            <td class="px-6 py-5 text-sm {{ $v->valid_until && $v->valid_until->isPast() ? 'text-red-500 font-bold' : 'text-slate-500' }}">
+                                {{ $v->valid_until ? $v->valid_until->format('d M Y, H:i') : 'Tanpa Batas' }}
                             </td>
                             <td class="px-6 py-5">
                                 <form action="{{ route('admin.vouchers.destroy', $v->id) }}" method="POST" onsubmit="return confirm('Hapus voucher ini?');">
