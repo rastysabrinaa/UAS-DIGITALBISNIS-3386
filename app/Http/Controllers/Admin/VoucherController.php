@@ -37,6 +37,7 @@ class VoucherController extends Controller
             'discount_percent' => 'required|integer|min:1|max:100',
             'event_id' => 'nullable|exists:events,id',
             'valid_until' => 'nullable|date',
+            'quota' => 'nullable|integer|min:1',
         ]);
 
         $user = auth()->user();
@@ -52,6 +53,7 @@ class VoucherController extends Controller
             'discount_percent' => $request->discount_percent,
             'event_id' => $request->event_id,
             'valid_until' => $request->valid_until,
+            'quota' => $request->quota,
         ]);
 
         return back()->with('success', 'Voucher berhasil dibuat!');

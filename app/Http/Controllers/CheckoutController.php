@@ -101,12 +101,20 @@ class CheckoutController extends Controller
                 ->where(function($query) {
                     $query->whereNull('valid_until')->orWhere('valid_until', '>=', now());
                 })
+                ->where(function($query) {
+                    $query->whereNull('quota')->orWhere('quota', '>', 0);
+                })
                 ->first();
 
             if ($voucher) {
                 $discountAmount = ($ticketPrice * $voucher->discount_percent) / 100;
+                
+                // Kurangi kuota jika ada
+                if (!is_null($voucher->quota)) {
+                    $voucher->decrement('quota', 1);
+                }
             } else {
-                return back()->with('error', 'Kode voucher tidak valid, tidak berlaku untuk event ini, atau sudah kadaluarsa.')->withInput();
+                return back()->with('error', 'Kode voucher tidak valid, tidak berlaku untuk event ini, sudah kadaluarsa, atau kuota habis.')->withInput();
             }
         }
 
@@ -186,6 +194,9 @@ class CheckoutController extends Controller
             })
             ->where(function($query) {
                 $query->whereNull('valid_until')->orWhere('valid_until', '>=', now());
+            })
+            ->where(function($query) {
+                $query->whereNull('quota')->orWhere('quota', '>', 0);
             })
             ->first();
 

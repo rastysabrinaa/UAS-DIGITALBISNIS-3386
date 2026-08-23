@@ -21,6 +21,10 @@
                     <input type="number" name="discount_percent" min="1" max="100" placeholder="50" required class="w-full px-5 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 outline-none">
                 </div>
                 <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Kuantitas (Opsional)</label>
+                    <input type="number" name="quota" min="1" placeholder="Kosongkan jika tanpa batas" class="w-full px-5 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 outline-none">
+                </div>
+                <div>
                     <label class="block text-sm font-bold text-slate-700 mb-2">Berlaku Untuk</label>
                     <select name="event_id" class="w-full px-5 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:border-indigo-600 focus:ring-4 focus:ring-indigo-500/10 outline-none">
                         <option value="">Semua Event Saya</option>
@@ -49,6 +53,7 @@
                         <tr>
                             <th class="px-6 py-4">Kode</th>
                             <th class="px-6 py-4">Diskon</th>
+                            <th class="px-6 py-4">Kuota</th>
                             <th class="px-6 py-4">Event Terkait</th>
                             <th class="px-6 py-4">Kedaluwarsa</th>
                             <th class="px-6 py-4">Aksi</th>
@@ -59,6 +64,9 @@
                         <tr class="hover:bg-slate-50/50 transition">
                             <td class="px-6 py-5 font-black text-indigo-600 uppercase">{{ $v->code }}</td>
                             <td class="px-6 py-5 font-bold">{{ $v->discount_percent }}%</td>
+                            <td class="px-6 py-5 text-sm font-medium {{ $v->quota === 0 ? 'text-red-500' : 'text-slate-500' }}">
+                                {{ is_null($v->quota) ? 'Tanpa Batas' : $v->quota . ' tersisa' }}
+                            </td>
                             <td class="px-6 py-5 text-sm text-slate-500">
                                 {{ $v->event ? $v->event->title : 'Semua Event' }}
                             </td>
@@ -77,7 +85,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-10 text-center text-slate-500 font-medium">Belum ada voucher yang dibuat.</td>
+                            <td colspan="6" class="px-6 py-10 text-center text-slate-500 font-medium">Belum ada voucher yang dibuat.</td>
                         </tr>
                         @endforelse
                     </tbody>

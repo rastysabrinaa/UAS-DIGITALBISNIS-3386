@@ -157,7 +157,7 @@
             </div>
         </div>
         <div class="max-w-7xl mx-auto pt-12 mt-12 border-t border-indigo-800 text-center text-indigo-400 text-sm">
-            &copy; 2024 AmikomEventHub. Built with Laravel & Tailwind CSS.
+            &copy; 2024 AmikomEventHub. Masterfully crafted with passion by Rasty Sabrina (24.12.3386).
         </div>
     </footer>
 

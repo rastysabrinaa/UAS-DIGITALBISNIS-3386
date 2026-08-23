@@ -92,11 +92,11 @@
                  <!-- Fitur Voucher -->
                  <div class="mt-4 pt-4 border-t border-slate-100">
                      <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Punya Kode Voucher?</label>
-                     <div class="flex gap-2">
+                     <div class="flex flex-col sm:flex-row gap-2 sm:gap-3">
                          <input type="text" id="voucher_code" name="voucher_code" placeholder="Misal: MAHASISWA50"
                              class="flex-1 px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium uppercase"
                              value="{{ old('voucher_code') }}">
-                         <button type="button" onclick="applyVoucher()" class="px-6 py-4 bg-slate-800 text-white font-bold rounded-2xl hover:bg-slate-900 transition">
+                         <button type="button" onclick="applyVoucher()" class="w-full sm:w-auto px-8 py-4 bg-slate-800 text-white font-bold rounded-2xl hover:bg-slate-900 transition whitespace-nowrap">
                              Terapkan
                          </button>
                      </div>

@@ -13,7 +13,8 @@ class Voucher extends Model
         'code',
         'discount_percent',
         'event_id',
-        'valid_until'
+        'valid_until',
+        'quota'
     ];
 
     protected $casts = [
