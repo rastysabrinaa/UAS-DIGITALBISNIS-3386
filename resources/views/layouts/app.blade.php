@@ -33,9 +33,7 @@
     <!-- Navigation -->
     <nav class="glass sticky top-0 md:top-8 z-50 md:mx-4 md:mt-4 px-4 md:px-6 py-4 md:rounded-2xl border-b md:border border-white/20 shadow-lg flex flex-wrap justify-between items-center">
         <div class="flex items-center gap-2">
-            <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-                AH
-            </div>
+            <img src="{{ asset('images/logo.png') }}" alt="AmikomEventHub Logo" class="w-10 h-10 rounded-full shadow-sm bg-white">
             <span class="text-xl font-bold tracking-tight">AmikomEventHub</span>
         </div>
         
@@ -123,9 +121,7 @@
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-12">
             <div class="space-y-4 col-span-2">
                 <div class="flex items-center gap-2">
-                    <div
-                        class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-indigo-900 font-bold text-xl">
-                        AH</div>
+                    <img src="{{ asset('images/logo.png') }}" alt="AmikomEventHub Logo" class="w-10 h-10 rounded-full shadow-sm bg-white">
                     <span class="text-2xl font-bold text-white">AmikomEventHub</span>
                 </div>
                 <p class="max-w-xs text-indigo-300">Platform reservasi tiket event online terbaik untuk mahasiswa dan

@@ -22,7 +22,7 @@
             <p>Kami menyadari bahwa Anda belum menyelesaikan pembayaran untuk Order ID: <strong>{{ $transaction->order_id }}</strong>.</p>
             <p>Segera selesaikan pembayaran Anda sebesar <strong>Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</strong> agar tidak kehabisan tiket.</p>
             
-            <a href="{{ route('checkout.payment', $transaction->order_id) }}" class="button">Bayar Sekarang</a>
+            <a href="{{ route('checkout.payment', $transaction->order_id) }}" class="button" style="color: #ffffff; text-decoration: none;">Bayar Sekarang</a>
         </div>
         <div class="footer">
             &copy; {{ date('Y') }} AmikomEventHub. All rights reserved.

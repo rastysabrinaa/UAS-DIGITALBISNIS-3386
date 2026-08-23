@@ -19,7 +19,7 @@
     <!-- Sidebar -->
     <aside class="w-64 bg-indigo-900 text-indigo-100 flex flex-col p-6 space-y-8 h-full overflow-y-auto shrink-0">
         <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-indigo-900 font-bold text-xl">AH</div>
+            <img src="{{ asset('images/logo.png') }}" alt="AmikomEventHub Logo" class="w-10 h-10 rounded-full shadow-sm bg-white">
             <span class="text-xl font-bold text-white tracking-tight">AmikomEventHub</span>
         </div>
 
