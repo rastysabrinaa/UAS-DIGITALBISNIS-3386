@@ -43,9 +43,16 @@
                      <span>Biaya Layanan</span>
                      <span>Rp 5.000</span>
                  </div>
+                 
+                 <!-- Baris Diskon (Disembunyikan secara default) -->
+                 <div id="discount-row" class="hidden flex justify-between text-emerald-600 font-bold">
+                     <span>Diskon Voucher (<span id="discount-percent"></span>%)</span>
+                     <span id="discount-amount">- Rp 0</span>
+                 </div>
+
                  <div class="flex justify-between text-2xl font-black mt-4 pt-4 border-t">
                      <span>Total Bayar</span>
-                     <span class="text-indigo-600">Rp {{ number_format($event->price + 5000, 0, ',', '.') }}</span>
+                     <span class="text-indigo-600" id="total-price-display">Rp {{ number_format($event->price + 5000, 0, ',', '.') }}</span>
                  </div>
              </div>
          </div>
@@ -86,11 +93,14 @@
                  <div class="mt-4 pt-4 border-t border-slate-100">
                      <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Punya Kode Voucher?</label>
                      <div class="flex gap-2">
-                         <input type="text" name="voucher_code" placeholder="Misal: MAHASISWA50"
+                         <input type="text" id="voucher_code" name="voucher_code" placeholder="Misal: MAHASISWA50"
                              class="flex-1 px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium uppercase"
                              value="{{ old('voucher_code') }}">
+                         <button type="button" onclick="applyVoucher()" class="px-6 py-4 bg-slate-800 text-white font-bold rounded-2xl hover:bg-slate-900 transition">
+                             Terapkan
+                         </button>
                      </div>
-                     <p class="text-[10px] text-slate-400 mt-2 font-bold tracking-tighter">Masukkan kode voucher (jika ada) untuk mendapatkan diskon tambahan.</p>
+                     <p id="voucher-message" class="text-[10px] text-slate-400 mt-2 font-bold tracking-tighter">Masukkan kode voucher (jika ada) untuk mendapatkan diskon tambahan.</p>
                  </div>
 
                  <button type="submit"
@@ -104,4 +114,62 @@
 
      </div>
  </main>
+
+ <script>
+     function formatRupiah(angka) {
+         return 'Rp ' + new Intl.NumberFormat('id-ID').format(angka);
+     }
+
+     function applyVoucher() {
+         const code = document.getElementById('voucher_code').value;
+         const messageEl = document.getElementById('voucher-message');
+         
+         if(!code) {
+             messageEl.innerText = "Masukkan kode voucher terlebih dahulu.";
+             messageEl.className = "text-red-500 mt-2 font-bold text-xs";
+             return;
+         }
+
+         messageEl.innerText = "Mengecek voucher...";
+         messageEl.className = "text-indigo-500 mt-2 font-bold text-xs";
+
+         fetch("{{ route('checkout.apply-voucher', $event->id) }}", {
+             method: 'POST',
+             headers: {
+                 'Content-Type': 'application/json',
+                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
+             },
+             body: JSON.stringify({ voucher_code: code })
+         })
+         .then(res => res.json())
+         .then(data => {
+             if(data.success) {
+                 messageEl.innerText = data.message;
+                 messageEl.className = "text-emerald-500 mt-2 font-bold text-xs";
+                 
+                 // Tampilkan baris diskon
+                 document.getElementById('discount-row').classList.remove('hidden');
+                 document.getElementById('discount-percent').innerText = data.discount_percent;
+                 document.getElementById('discount-amount').innerText = '- ' + formatRupiah(data.discount_amount);
+                 
+                 // Update Total Harga
+                 document.getElementById('total-price-display').innerText = data.new_total_price_formatted;
+                 
+                 // Kunci input agar tidak diubah (opsional)
+                 document.getElementById('voucher_code').readOnly = true;
+             } else {
+                 messageEl.innerText = data.message;
+                 messageEl.className = "text-red-500 mt-2 font-bold text-xs";
+                 
+                 // Reset tampilan jika gagal
+                 document.getElementById('discount-row').classList.add('hidden');
+                 document.getElementById('total-price-display').innerText = "Rp {{ number_format($event->price + 5000, 0, ',', '.') }}";
+             }
+         })
+         .catch(err => {
+             messageEl.innerText = "Terjadi kesalahan sistem.";
+             messageEl.className = "text-red-500 mt-2 font-bold text-xs";
+         });
+     }
+ </script>
  @endsection

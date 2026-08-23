@@ -172,6 +172,44 @@ class CheckoutController extends Controller
         }
     }
 
+    /**
+     * Mengecek dan menerapkan voucher secara asynchronous (AJAX)
+     */
+    public function applyVoucher(Request $request, $eventId)
+    {
+        $event = Event::findOrFail($eventId);
+        $voucherCode = strtoupper($request->voucher_code);
+
+        $voucher = \App\Models\Voucher::where('code', $voucherCode)
+            ->where(function($query) use ($event) {
+                $query->whereNull('event_id')->orWhere('event_id', $event->id);
+            })
+            ->where(function($query) {
+                $query->whereNull('valid_until')->orWhere('valid_until', '>=', now());
+            })
+            ->first();
+
+        if ($voucher) {
+            $ticketPrice = $event->price;
+            $discountAmount = ($ticketPrice * $voucher->discount_percent) / 100;
+            $totalPrice = ($ticketPrice - $discountAmount) + 5000; // Harga setelah diskon + biaya layanan
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Voucher berhasil diterapkan!',
+                'discount_percent' => $voucher->discount_percent,
+                'discount_amount' => $discountAmount,
+                'new_total_price' => $totalPrice,
+                'new_total_price_formatted' => 'Rp ' . number_format($totalPrice, 0, ',', '.')
+            ]);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Kode voucher tidak valid, kadaluarsa, atau tidak berlaku untuk event ini.'
+        ], 400);
+    }
+
     public function payment($order_id)
     {
         $categories = Category::all();
