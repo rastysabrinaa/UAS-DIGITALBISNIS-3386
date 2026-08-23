@@ -50,8 +50,8 @@ class EventController extends Controller
 
         // Upload poster_path jika ada
         if ($request->hasFile('poster_path')) {
-            $uploadedFileUrl = cloudinary()->uploadApi()->upload($request->file('poster_path')->getRealPath())['secure_url'];
-            $validated['poster_path'] = $uploadedFileUrl;
+            $path = $request->file('poster_path')->store('posters', 's3');
+            $validated['poster_path'] = Storage::disk('s3')->url($path);
         }
 
         Event::create($validated);
@@ -95,10 +95,10 @@ class EventController extends Controller
 
         $validated['slug'] = Str::slug($request->title);
 
-        // Jika mengunggah poster_path baru, upload ke Cloudinary
+        // Jika mengunggah poster_path baru, upload ke S3
         if ($request->hasFile('poster_path')) {
-            $uploadedFileUrl = cloudinary()->uploadApi()->upload($request->file('poster_path')->getRealPath())['secure_url'];
-            $validated['poster_path'] = $uploadedFileUrl;
+            $path = $request->file('poster_path')->store('posters', 's3');
+            $validated['poster_path'] = Storage::disk('s3')->url($path);
         }
 
         // Eksekusi Update ke Database
@@ -113,9 +113,15 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        // Hapus file poster_path dari storage jika ada (optional since we use cloudinary mostly)
-        if ($event->poster_path && !Str::startsWith($event->poster_path, 'http')) {
-            Storage::disk('public')->delete($event->poster_path);
+        // Hapus file poster_path dari storage jika ada
+        if ($event->poster_path && Str::contains($event->poster_path, 'supabase.co')) {
+            $path = parse_url($event->poster_path, PHP_URL_PATH);
+            // Extract the path after bucket name (e.g., 'event-posters/posters/filename.jpg' -> 'posters/filename.jpg')
+            $bucketSegment = '/event-posters/';
+            if (Str::contains($path, $bucketSegment)) {
+                $s3Path = explode($bucketSegment, $path)[1];
+                Storage::disk('s3')->delete($s3Path);
+            }
         }
 
         $event->delete();
