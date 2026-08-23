@@ -21,8 +21,12 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
     let html5QrcodeScanner;
+    let isProcessing = false;
     
     function onScanSuccess(decodedText, decodedResult) {
+        if (isProcessing) return;
+        isProcessing = true;
+
         // Hentikan scan sementara
         html5QrcodeScanner.pause();
         
@@ -55,6 +59,7 @@
         })
         .catch(err => {
             console.error("Error validasi:", err);
+            isProcessing = false;
             html5QrcodeScanner.resume();
         });
     }
@@ -65,6 +70,7 @@
 
     function resumeScanning() {
         document.getElementById('result-box').classList.add('hidden');
+        isProcessing = false;
         html5QrcodeScanner.resume();
     }
 
