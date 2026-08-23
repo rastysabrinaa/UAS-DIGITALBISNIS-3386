@@ -66,6 +66,17 @@ class ScannerController extends Controller
         // Tandai sebagai sudah digunakan
         $transaction->update(['is_used' => true]);
 
+        // Generate PDF and send Email
+        try {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.certificate', compact('transaction'))
+                ->setPaper('a4', 'landscape');
+            $pdfContent = $pdf->output();
+
+            \Illuminate\Support\Facades\Mail::to($transaction->customer_email)->send(new \App\Mail\EventCertificate($transaction, $pdfContent));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal mengirim E-Certificate: ' . $e->getMessage());
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Tiket Valid! Selamat datang, ' . $transaction->customer_name . '.',

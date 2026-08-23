@@ -70,10 +70,11 @@ class CheckoutController extends Controller
                 });
 
                 // c. Kirim E-Ticket via Email (Opsional/Try-Catch agar tidak menggagalkan flow)
+                // c. Kirim E-Ticket via Email
                 try {
-                    Mail::to($transaction->customer_email)->send(new EventTicketMail($transaction));
+                    \Illuminate\Support\Facades\Mail::to($transaction->customer_email)->send(new \App\Mail\TicketPurchased($transaction));
                 } catch (\Exception $e) {
-                    Log::error('Gagal mengirim email E-Ticket Acara Gratis: ' . $e->getMessage());
+                    Log::error('Gagal mengirim email TicketPurchased Acara Gratis: ' . $e->getMessage());
                 }
 
                 // d. Langsung redirect ke rute sukses (E-Ticket terbit)
@@ -171,6 +172,13 @@ class CheckoutController extends Controller
             
             // Simpan Snap Token ke database
             $transaction->update(['snap_token' => $snapToken]);
+            
+            // Kirim email pengingat pembayaran
+            try {
+                \Illuminate\Support\Facades\Mail::to($transaction->customer_email)->send(new \App\Mail\UnpaidTicketReminder($transaction));
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Gagal mengirim email UnpaidTicketReminder: ' . $e->getMessage());
+            }
             
             // Redirect ke halaman pembayaran
             return redirect()->route('checkout.payment', $transaction->order_id);

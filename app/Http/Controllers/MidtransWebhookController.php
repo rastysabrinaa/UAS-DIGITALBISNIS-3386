@@ -71,9 +71,9 @@ class MidtransWebhookController extends Controller
         
         // Mengirimkan email E-Ticket ke pelanggan
         try {
-            \Illuminate\Support\Facades\Mail::to($transaction->customer_email)->send(new \App\Mail\EventTicketMail($transaction));
+            \Illuminate\Support\Facades\Mail::to($transaction->customer_email)->send(new \App\Mail\TicketPurchased($transaction));
         } catch (\Exception $e) {
-            Log::error('Gagal mengirim email E-Ticket: ' . $e->getMessage());
+            Log::error('Gagal mengirim email TicketPurchased: ' . $e->getMessage());
         }
     }
 }

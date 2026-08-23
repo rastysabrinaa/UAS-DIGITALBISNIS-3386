@@ -34,6 +34,8 @@ class PartnerController extends Controller
 
         \App\Models\Partners::create($data);
 
+        \Illuminate\Support\Facades\Cache::forget('partners');
+
         return redirect()->route('admin.partners.index')->with('success', 'Data Partner berhasil ditambahkan.');
     }
 
@@ -49,11 +51,15 @@ class PartnerController extends Controller
 
         $partner->update($data);
 
+        \Illuminate\Support\Facades\Cache::forget('partners');
+
         return redirect()->route('admin.partners.index')->with('success', 'Data Partner berhasil diperbarui.');
     }
 
     public function destroy(\App\Models\Partners $partner) {
         $partner->delete();
+
+        \Illuminate\Support\Facades\Cache::forget('partners');
 
         return redirect()->route('admin.partners.index')->with('success', 'Data Partner berhasil dihapus.');
     }
