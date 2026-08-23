@@ -89,18 +89,50 @@ class CheckoutController extends Controller
         // ALUR TRANSAKSI BERBAYAR (MIDTRANS SNAP)
         // =========================================================================
         
-        $totalPrice = $event->price + 5000; // Menambahkan biaya admin (dummy)
+        $ticketPrice = $event->price;
+        $discountAmount = 0;
+
+        // Cek Voucher
+        if ($request->filled('voucher_code')) {
+            $voucher = \App\Models\Voucher::where('code', strtoupper($request->voucher_code))
+                ->where(function($query) use ($event) {
+                    $query->whereNull('event_id')->orWhere('event_id', $event->id);
+                })
+                ->where(function($query) {
+                    $query->whereNull('valid_until')->orWhere('valid_until', '>=', now());
+                })
+                ->first();
+
+            if ($voucher) {
+                $discountAmount = ($ticketPrice * $voucher->discount_percent) / 100;
+            } else {
+                return back()->with('error', 'Kode voucher tidak valid, tidak berlaku untuk event ini, atau sudah kadaluarsa.')->withInput();
+            }
+        }
+
+        $totalPrice = ($ticketPrice - $discountAmount) + 5000; // Harga setelah diskon + biaya admin
 
         // 4. Merekam Transaksi Berbayar ke Database dengan Status Awal 'Pending'
-        $transaction = Transaction::create([
-            'event_id'       => $event->id,
-            'order_id'       => $orderId,
-            'customer_name'  => $request->customer_name,
-            'customer_email' => $request->customer_email,
-            'customer_phone' => $request->customer_phone,
-            'total_price'    => $totalPrice,
-            'status'         => 'Pending',
-        ]);
+        // RESERVASI TIKET: Potong stok tiket sekarang juga untuk menghindari race condition
+        DB::beginTransaction();
+        try {
+            $transaction = Transaction::create([
+                'event_id'       => $event->id,
+                'order_id'       => $orderId,
+                'customer_name'  => $request->customer_name,
+                'customer_email' => $request->customer_email,
+                'customer_phone' => $request->customer_phone,
+                'total_price'    => $totalPrice,
+                'status'         => 'Pending',
+            ]);
+
+            // Reserve stok tiket langsung
+            $event->decrement('stock', 1);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal memproses pendaftaran: ' . $e->getMessage());
+        }
 
         // --- INTEGRASI SNAP MIDTRANS ---
         \Midtrans\Config::$serverKey = env('MIDTRANS_SERVER_KEY');
@@ -118,6 +150,11 @@ class CheckoutController extends Controller
                 'email'      => $request->customer_email,
                 'phone'      => $request->customer_phone,
             ],
+            'expiry' => [
+                'start_time' => now()->format('Y-m-d H:i:s O'),
+                'unit'       => 'minute',
+                'duration'   => 15
+            ]
         ];
 
         try {
@@ -174,15 +211,13 @@ class CheckoutController extends Controller
                     if (strtolower($transaction->status) === 'pending') {
                         $transaction->update(['status' => 'success']);
                         
-                        // Kurangi stok jika belum berkurang
-                        if ($transaction->event && $transaction->event->stock > 0) {
-                            $transaction->event->decrement('stock', 1);
-                            
-                            try {
-                                Mail::to($transaction->customer_email)->send(new EventTicketMail($transaction));
-                            } catch (\Exception $e) {
-                                Log::error('Gagal mengirim email E-Ticket secara manual (Bypass): ' . $e->getMessage());
-                            }
+                        // Stok sudah dikurangi di awal saat klik Checkout (Reserve Ticket)
+                        // Jadi di sini tidak perlu mengurangi stok lagi.
+                        
+                        try {
+                            Mail::to($transaction->customer_email)->send(new EventTicketMail($transaction));
+                        } catch (\Exception $e) {
+                            Log::error('Gagal mengirim email E-Ticket secara manual (Bypass): ' . $e->getMessage());
                         }
                     }
                 }

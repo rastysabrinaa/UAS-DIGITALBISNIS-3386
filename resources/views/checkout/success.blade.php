@@ -13,6 +13,15 @@
             Pembayaran untuk pesanan <strong>{{ $transaction->order_id }}</strong> sedang diproses atau telah berhasil. 
             E-Ticket akan dikirim ke email Anda (<strong>{{ $transaction->customer_email }}</strong>) setelah pembayaran terkonfirmasi lunas.
         </p>
+
+        @if(strtolower($transaction->status) === 'success' || strtolower($transaction->status) === 'settlement')
+            <div class="mb-8 flex flex-col items-center">
+                <p class="text-sm font-bold text-slate-700 mb-2">QR Code Tiket Anda (Tunjukkan saat Check-in)</p>
+                <div class="p-4 bg-white border-2 border-indigo-100 rounded-2xl shadow-sm">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data={{ $transaction->order_id }}" alt="QR Code" class="w-40 h-40">
+                </div>
+            </div>
+        @endif
         <a href="{{ route('home') }}" class="inline-block px-8 py-4 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 transition">
             Kembali ke Beranda
         </a>

@@ -15,9 +15,9 @@
     </style>
 </head>
 
-<body class="bg-slate-50 text-slate-900 flex min-h-screen">
+<body class="bg-slate-50 text-slate-900 flex h-screen overflow-hidden">
     <!-- Sidebar -->
-    <aside class="w-64 bg-indigo-900 text-indigo-100 flex flex-col p-6 space-y-8 sticky top-0 h-screen">
+    <aside class="w-64 bg-indigo-900 text-indigo-100 flex flex-col p-6 space-y-8 h-full overflow-y-auto shrink-0">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-indigo-900 font-bold text-xl">AH</div>
             <span class="text-xl font-bold text-white tracking-tight">AmikomEventHub</span>
@@ -85,12 +85,7 @@
                     Dashboard
                 </a>
 
-                <a href="{{ route('admin.events.create') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.events.create') ? 'bg-indigo-800 text-white' : 'hover:bg-indigo-800' }} rounded-xl font-bold transition">
-                    <svg class="w-5 h-5 {{ request()->routeIs('admin.events.create') ? 'text-indigo-300' : 'text-indigo-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                    </svg>
-                    Buat Event
-                </a>
+
 
                 <a href="{{ route('admin.events.index') }}" class="flex items-center gap-3 px-4 py-3 {{ request()->routeIs('admin.events.*') ? 'bg-indigo-800 text-white' : 'hover:bg-indigo-800' }} rounded-xl font-bold transition">
                     <svg class="w-5 h-5 {{ request()->routeIs('admin.events.*') ? 'text-indigo-300' : 'text-indigo-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -131,7 +126,7 @@
     </aside>
 
     {{-- Main Content Area --}}
-    <main class="flex-1 p-10 overflow-y-auto w-full">
+    <main class="flex-1 p-6 md:p-10 h-full overflow-y-auto bg-slate-50 relative">
         <!-- Header -->
         <header class="flex justify-between items-center mb-10">
             <div>

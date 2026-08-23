@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EventController as AdminEventController;
 use App\Http\Controllers\Admin\PartnerController;
+use App\Http\Controllers\Admin\ScannerController;
 use App\Http\Controllers\Admin\SuperAdminController;
 use App\Http\Controllers\Admin\TransactionController;
 
@@ -99,6 +100,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::resource('/events', AdminEventController::class);
         Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+        
+        // Scanner Routes
+        Route::get('/scanner/{event}', [ScannerController::class, 'index'])->name('scanner.index');
+        Route::post('/scanner/{event}/verify', [ScannerController::class, 'verify'])->name('scanner.verify');
     });
 
     // 2. FITUR KHUSUS SUPERADMIN

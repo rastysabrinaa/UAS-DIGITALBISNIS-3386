@@ -81,6 +81,17 @@
                              required value="{{ old('customer_phone') }}">
                      </div>
                  </div>
+                 
+                 <!-- Fitur Voucher -->
+                 <div class="mt-4 pt-4 border-t border-slate-100">
+                     <label class="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Punya Kode Voucher?</label>
+                     <div class="flex gap-2">
+                         <input type="text" name="voucher_code" placeholder="Misal: MAHASISWA50"
+                             class="flex-1 px-5 py-4 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-600 outline-none transition font-medium uppercase"
+                             value="{{ old('voucher_code') }}">
+                     </div>
+                     <p class="text-[10px] text-slate-400 mt-2 font-bold tracking-tighter">Masukkan kode voucher (jika ada) untuk mendapatkan diskon tambahan.</p>
+                 </div>
 
                  <button type="submit"
                      class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-black text-xl shadow-xl shadow-indigo-200 hover:bg-indigo-700 active:scale-95 transition-all">
