@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AmikomEventHub - Temukan Event Seru!</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
@@ -23,19 +25,29 @@
 <body class="bg-slate-50 text-slate-900">
 
     <!-- Navigation -->
-    <nav
-        class="glass sticky top-8 z-40 mx-4 mt-4 px-6 py-4 rounded-2xl border border-white/20 shadow-lg flex justify-between items-center">
+    <nav class="glass sticky top-0 md:top-8 z-50 md:mx-4 md:mt-4 px-4 md:px-6 py-4 md:rounded-2xl border-b md:border border-white/20 shadow-lg flex flex-wrap justify-between items-center">
         <div class="flex items-center gap-2">
-            <div
-                class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
-                AH</div>
+            <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">
+                AH
+            </div>
             <span class="text-xl font-bold tracking-tight">AmikomEventHub</span>
         </div>
+        
+        <!-- Hamburger Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 text-slate-700 hover:bg-slate-100 rounded-lg focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+
+        <!-- Desktop Menu -->
         <div class="hidden md:flex gap-8 font-medium">
             <a href="/" class="hover:text-indigo-600 transition">Beranda</a>
             <a href="/#events" class="hover:text-indigo-600 transition">Jelajahi Event</a>
+            <a href="{{ route('organizer.join') }}" class="hover:text-indigo-600 transition">Buat Event</a>
         </div>
-        <div class="flex gap-3 items-center">
+
+        <div class="hidden md:flex gap-3 items-center">
             @auth
                 <div class="relative group">
                     <button class="px-5 py-2.5 bg-slate-100 rounded-xl font-semibold hover:bg-slate-200 transition flex items-center gap-2">
@@ -49,10 +61,7 @@
                             @elseif(Auth::user()->role === 'organizer' && Auth::user()->status === 'pending')
                                 <span class="block px-4 py-2 text-sm text-amber-600 font-medium">⏳ Menunggu Persetujuan</span>
                             @elseif(Auth::user()->role === 'user')
-                                <form action="{{ route('apply.organizer') }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">Ajukan sbg Organizer</button>
-                                </form>
+                                <a href="{{ route('organizer.join') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">Ajukan sbg Organizer</a>
                             @endif
                             <a href="{{ route('tickets.index') }}" class="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg">Tiket Saya</a>
                             <form action="{{ route('admin.logout') }}" method="POST">
@@ -66,6 +75,38 @@
                 <a href="{{ route('admin.login') }}" class="px-5 py-2.5 rounded-xl font-semibold hover:bg-slate-200 transition">Login</a>
                 <a href="{{ route('auth.google') }}" class="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-semibold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition">Daftar</a>
             @endauth
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden w-full md:hidden mt-4 pb-4 border-t border-slate-200">
+            <div class="flex flex-col gap-4 mt-4 font-medium px-2">
+                <a href="/" class="hover:text-indigo-600 transition block">Beranda</a>
+                <a href="/#events" class="hover:text-indigo-600 transition block">Jelajahi Event</a>
+                <a href="{{ route('organizer.join') }}" class="hover:text-indigo-600 transition block">Buat Event</a>
+                
+                <hr class="border-slate-200 my-2">
+                
+                @auth
+                    <div class="text-sm text-slate-500 mb-2">Halo, {{ Auth::user()->name }}</div>
+                    @if(Auth::user()->role === 'superadmin' || (Auth::user()->role === 'organizer' && Auth::user()->status === 'approved'))
+                        <a href="{{ route('admin.dashboard') }}" class="hover:text-indigo-600 transition block">Dashboard Admin</a>
+                    @elseif(Auth::user()->role === 'organizer' && Auth::user()->status === 'pending')
+                        <span class="text-amber-600 font-medium block">⏳ Menunggu Persetujuan Organizer</span>
+                    @elseif(Auth::user()->role === 'user')
+                        <a href="{{ route('organizer.join') }}" class="hover:text-indigo-600 transition block">Ajukan sbg Organizer</a>
+                    @endif
+                    <a href="{{ route('tickets.index') }}" class="hover:text-indigo-600 transition block">Tiket Saya</a>
+                    <form action="{{ route('admin.logout') }}" method="POST" class="mt-2">
+                        @csrf
+                        <button type="submit" class="text-red-600 hover:text-red-700 block w-full text-left">Logout</button>
+                    </form>
+                @else
+                    <div class="flex flex-col gap-3 mt-2">
+                        <a href="{{ route('admin.login') }}" class="text-center py-2.5 bg-slate-100 rounded-xl font-semibold hover:bg-slate-200 transition">Login</a>
+                        <a href="{{ route('auth.google') }}" class="text-center py-2.5 bg-indigo-600 text-white rounded-xl font-semibold hover:bg-indigo-700 transition">Daftar</a>
+                    </div>
+                @endauth
+            </div>
         </div>
     </nav>
 
@@ -114,6 +155,15 @@
         </div>
     </footer>
 
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            var menu = document.getElementById('mobile-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+            }
+        });
+    </script>
 </body>
-
 </html>

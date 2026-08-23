@@ -3,7 +3,7 @@
 @section('content')
 
     <!-- Hero Section -->
-    <section class="max-w-7xl mx-auto px-6 py-20 flex flex-col md:flex-row items-center gap-12">
+    <section class="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20 flex flex-col md:flex-row items-center gap-12">
         <div class="flex-1 space-y-8">
             <span
                 class="inline-block px-4 py-1.5 bg-indigo-100 text-indigo-700 rounded-full text-sm font-bold uppercase tracking-wider">#1
@@ -33,7 +33,7 @@
             <div
                 class="absolute -bottom-10 -right-10 w-64 h-64 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000">
             </div>
-            <img src="https://i.ibb.co.com/bZTZvzG/concert.jpg" alt="Concert"
+            <img src="https://i.ibb.co.com/bZTZvzG/concert.jpg" alt="Concert" loading="lazy"
                 class="rounded-[2rem] shadow-2xl relative z-10 w-full object-cover aspect-[4/5] object-center">
 
             <div class="absolute -bottom-6 -left-6 glass p-6 rounded-2xl shadow-xl z-20 border border-white">
@@ -54,7 +54,7 @@
     </section>
 
     <!-- Events Grid -->
-    <section id="events" class="max-w-7xl mx-auto px-6 py-20">
+    <section id="events" class="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-4">
             <div>
                 <h2 class="text-3xl font-extrabold mb-2">Jelajahi Event</h2>
@@ -81,7 +81,7 @@
                 <div class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col justify-between">
                     <div>
                         <div class="relative overflow-hidden aspect-[3/4]">
-                            <img src="{{ $event->poster_path ? (Str::startsWith($event->poster_path, 'http') ? $event->poster_path : asset('storage/' . $event->poster_path)) : 'https://placehold.co/600x800' }}" alt="{{ $event->title }}"
+                            <img src="{{ $event->poster_path ? (Str::startsWith($event->poster_path, 'http') ? $event->poster_path : asset('storage/' . $event->poster_path)) : 'https://placehold.co/600x800' }}" alt="{{ $event->title }}" loading="lazy"
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 {{ $isPast ? 'grayscale-[30%]' : '' }}">
 
                             <!-- Kategori Badge -->
@@ -132,7 +132,7 @@
     </section>
 
     <!-- Partners Section -->
-    <section class="max-w-7xl mx-auto px-6 py-20 bg-slate-50 rounded-[3rem] mb-20">
+    <section class="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-20 bg-slate-50 rounded-[2rem] md:rounded-[3rem] mb-12 md:mb-20">
         <div class="text-center mb-12">
             <h2 class="text-3xl font-extrabold mb-2">Partner Resmi Kami</h2>
             <p class="text-slate-500 font-medium">Platform AmikomEventHub didukung oleh berbagai partner terbaik.</p>
@@ -140,7 +140,7 @@
         <div class="flex flex-wrap justify-center gap-8 md:gap-12 items-center">
             @foreach($partners as $partner)
             <div class="flex flex-col items-center justify-center p-4 grayscale hover:grayscale-0 transition duration-300">
-                <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" class="max-h-16 object-contain mb-2">
+                <img src="{{ $partner->logo_url }}" alt="{{ $partner->name }}" loading="lazy" class="max-h-16 object-contain mb-2">
                 <span class="text-sm font-bold text-slate-400">{{ $partner->name }}</span>
             </div>
             @endforeach

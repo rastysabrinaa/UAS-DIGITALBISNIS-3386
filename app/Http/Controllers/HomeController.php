@@ -11,8 +11,13 @@ class HomeController extends Controller
 {
     public function index(Request $request) 
     {
-        $categories = Category::all();
-        $partners = Partners::all();
+        $categories = \Illuminate\Support\Facades\Cache::remember('categories', 3600, function () {
+            return Category::all();
+        });
+
+        $partners = \Illuminate\Support\Facades\Cache::remember('partners', 3600, function () {
+            return Partners::all();
+        });
 
         // 1. Inisialisasi query tanpa membatasi tanggal (agar event berlalu tetap tampil)
         $query = Event::with('category');

@@ -54,6 +54,7 @@ Route::resource('pengurus', PengurusController::class);
 // Public Dynamic Routes
 Route::get('/event/{event}', [EventController::class, 'show'])->name('events.show');
 Route::get('/organizer/profile/{id}', [OrganizerController::class, 'showProfile'])->name('organizer.profile');
+Route::view('/organizer/join', 'organizer.join')->name('organizer.join');
 
 // ==================== USER AUTHENTICATED (Pembeli / Mahasiswa) ====================
 Route::middleware(['auth'])->group(function () {
@@ -76,7 +77,7 @@ Route::middleware(['auth'])->group(function () {
             $user->role = 'organizer';
             $user->status = 'pending';
             $user->save();
-            return back()->with('success', 'Pengajuan menjadi organizer berhasil dikirim dan menunggu persetujuan admin.');
+            return redirect()->route('admin.dashboard')->with('success', 'Pengajuan menjadi organizer berhasil dikirim dan menunggu persetujuan admin.');
         }
         return back()->with('error', 'Gagal mengajukan.');
     })->name('apply.organizer');
