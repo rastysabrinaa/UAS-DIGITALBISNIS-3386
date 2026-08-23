@@ -81,7 +81,7 @@
                 <div class="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-300 overflow-hidden flex flex-col justify-between">
                     <div>
                         <div class="relative overflow-hidden aspect-[3/4]">
-                            <img src="{{ $event->poster_path ? (Str::startsWith($event->poster_path, 'http') ? $event->poster_path : asset('storage/' . $event->poster_path)) : 'https://placehold.co/600x800' }}" alt="{{ $event->title }}" loading="lazy"
+                            <img src="{{ $event->poster_path ? (str_starts_with($event->poster_path, 'http') ? $event->poster_path : asset('storage/' . $event->poster_path)) : 'https://placehold.co/600x800' }}" alt="{{ $event->title }}" loading="lazy"
                                  class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 {{ $isPast ? 'grayscale-[30%]' : '' }}">
 
                             <!-- Kategori Badge -->

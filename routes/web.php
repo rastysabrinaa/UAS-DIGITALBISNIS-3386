@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\ScannerController;
 use App\Http\Controllers\Admin\SuperAdminController;
 use App\Http\Controllers\Admin\TransactionController;
+use App\Http\Controllers\Admin\VoucherController;
 
 // Import Controllers (Public, User, & Organizer)
 use App\Http\Controllers\CheckoutController;
@@ -104,6 +105,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Scanner Routes
         Route::get('/scanner/{event}', [ScannerController::class, 'index'])->name('scanner.index');
         Route::post('/scanner/{event}/verify', [ScannerController::class, 'verify'])->name('scanner.verify');
+
+        // Vouchers / Dynamic Pricing
+        Route::resource('/vouchers', VoucherController::class)->only(['index', 'store', 'destroy']);
     });
 
     // 2. FITUR KHUSUS SUPERADMIN
