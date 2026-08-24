@@ -39,7 +39,7 @@
                  </div>
                  <div class="flex justify-between text-slate-500">
                      <span>Biaya Layanan</span>
-                     <span>Rp 5.000</span>
+                     <span id="service-fee">Rp {{ $event->price == 0 ? '0' : '5.000' }}</span>
                  </div>
                  
                  <!-- Baris Diskon (Disembunyikan secara default) -->
@@ -50,7 +50,7 @@
 
                  <div class="flex justify-between text-2xl font-black mt-4 pt-4 border-t">
                      <span>Total Bayar</span>
-                     <span class="text-indigo-600" id="total-price-display">Rp {{ number_format($event->price + 5000, 0, ',', '.') }}</span>
+                     <span class="text-indigo-600" id="total-price-display">Rp {{ number_format($event->price == 0 ? 0 : $event->price + 5000, 0, ',', '.') }}</span>
                  </div>
              </div>
          </div>
@@ -150,6 +150,9 @@
                  document.getElementById('discount-percent').innerText = data.discount_percent;
                  document.getElementById('discount-amount').innerText = '- ' + formatRupiah(data.discount_amount);
                  
+                 // Update service fee text dynamically
+                 document.getElementById('service-fee').innerText = data.new_total_price == 0 ? 'Rp 0' : 'Rp 5.000';
+
                  // Update Total Harga
                  document.getElementById('total-price-display').innerText = data.new_total_price_formatted;
                  
@@ -161,7 +164,8 @@
                  
                  // Reset tampilan jika gagal
                  document.getElementById('discount-row').classList.add('hidden');
-                 document.getElementById('total-price-display').innerText = "Rp {{ number_format($event->price + 5000, 0, ',', '.') }}";
+                 document.getElementById('service-fee').innerText = "Rp {{ $event->price == 0 ? '0' : '5.000' }}";
+                 document.getElementById('total-price-display').innerText = "Rp {{ number_format($event->price == 0 ? 0 : $event->price + 5000, 0, ',', '.') }}";
              }
          })
          .catch(err => {

@@ -48,48 +48,6 @@ class CheckoutController extends Controller
         // 3. Generate Kode TRX (Unik)
         $orderId = 'TRX-' . time() . '-' . Str::random(5);
 
-        // =========================================================================
-        // LOGIKA KHUSUS: BYPASS TRANSAKSI JIKA ACARA GRATIS ($event->price == 0)
-        // =========================================================================
-        if ($event->price == 0) {
-            try {
-                DB::transaction(function () use ($request, $event, $orderId, &$transaction) {
-                    // a. Merekam Transaksi dengan harga 0 & Status Langsung Success
-                    $transaction = Transaction::create([
-                        'event_id'       => $event->id,
-                        'order_id'       => $orderId,
-                        'customer_name'  => $request->customer_name,
-                        'customer_email' => $request->customer_email,
-                        'customer_phone' => $request->customer_phone,
-                        'total_price'    => 0,
-                        'status'         => 'success', // Langsung aktif tanpa bayar
-                    ]);
-
-                    // b. Kurangi stok tiket saat itu juga
-                    $event->decrement('stock', 1);
-                });
-
-                // c. Kirim E-Ticket via Email (Opsional/Try-Catch agar tidak menggagalkan flow)
-                // c. Kirim E-Ticket via Email
-                try {
-                    \Illuminate\Support\Facades\Mail::to($transaction->customer_email)->send(new \App\Mail\TicketPurchased($transaction));
-                } catch (\Exception $e) {
-                    Log::error('Gagal mengirim email TicketPurchased Acara Gratis: ' . $e->getMessage());
-                }
-
-                // d. Langsung redirect ke rute sukses (E-Ticket terbit)
-                return redirect()->route('checkout.success', $transaction->order_id)
-                                 ->with('success', 'Pendaftaran berhasil! E-Ticket Anda telah terbit.');
-
-            } catch (\Exception $e) {
-                return back()->with('error', 'Gagal memproses pendaftaran acara gratis: ' . $e->getMessage());
-            }
-        }
-
-        // =========================================================================
-        // ALUR TRANSAKSI BERBAYAR (MIDTRANS SNAP)
-        // =========================================================================
-        
         $ticketPrice = $event->price;
         $discountAmount = 0;
 
@@ -119,7 +77,54 @@ class CheckoutController extends Controller
             }
         }
 
-        $totalPrice = ($ticketPrice - $discountAmount) + 5000; // Harga setelah diskon + biaya admin
+        $priceAfterDiscount = $ticketPrice - $discountAmount;
+        if ($priceAfterDiscount < 0) {
+            $priceAfterDiscount = 0;
+        }
+        
+        $serviceFee = ($priceAfterDiscount == 0) ? 0 : 5000;
+        $totalPrice = $priceAfterDiscount + $serviceFee; // Harga setelah diskon + biaya admin
+
+        // =========================================================================
+        // LOGIKA KHUSUS: BYPASS TRANSAKSI JIKA GRATIS ATAU POTONGAN 100% ($totalPrice == 0)
+        // =========================================================================
+        if ($totalPrice == 0) {
+            try {
+                DB::transaction(function () use ($request, $event, $orderId, &$transaction) {
+                    // a. Merekam Transaksi dengan harga 0 & Status Langsung Success
+                    $transaction = Transaction::create([
+                        'event_id'       => $event->id,
+                        'order_id'       => $orderId,
+                        'customer_name'  => $request->customer_name,
+                        'customer_email' => $request->customer_email,
+                        'customer_phone' => $request->customer_phone,
+                        'total_price'    => 0,
+                        'status'         => 'success', // Langsung aktif tanpa bayar
+                    ]);
+
+                    // b. Kurangi stok tiket saat itu juga
+                    $event->decrement('stock', 1);
+                });
+
+                // c. Kirim E-Ticket via Email
+                try {
+                    \Illuminate\Support\Facades\Mail::to($transaction->customer_email)->send(new \App\Mail\EventTicketMail($transaction));
+                } catch (\Exception $e) {
+                    Log::error('Gagal mengirim email TicketPurchased Acara Gratis: ' . $e->getMessage());
+                }
+
+                // d. Langsung redirect ke rute sukses (E-Ticket terbit)
+                return redirect()->route('checkout.success', $transaction->order_id)
+                                 ->with('success', 'Pendaftaran berhasil! E-Ticket Anda telah terbit.');
+
+            } catch (\Exception $e) {
+                return back()->with('error', 'Gagal memproses pendaftaran acara gratis: ' . $e->getMessage());
+            }
+        }
+
+        // =========================================================================
+        // ALUR TRANSAKSI BERBAYAR (MIDTRANS SNAP)
+        // =========================================================================
 
         // 4. Merekam Transaksi Berbayar ke Database dengan Status Awal 'Pending'
         // RESERVASI TIKET: Potong stok tiket sekarang juga untuk menghindari race condition
@@ -211,7 +216,14 @@ class CheckoutController extends Controller
         if ($voucher) {
             $ticketPrice = $event->price;
             $discountAmount = ($ticketPrice * $voucher->discount_percent) / 100;
-            $totalPrice = ($ticketPrice - $discountAmount) + 5000; // Harga setelah diskon + biaya layanan
+            
+            $priceAfterDiscount = $ticketPrice - $discountAmount;
+            if ($priceAfterDiscount < 0) {
+                $priceAfterDiscount = 0;
+            }
+            
+            $serviceFee = ($priceAfterDiscount == 0) ? 0 : 5000;
+            $totalPrice = $priceAfterDiscount + $serviceFee; // Harga setelah diskon + biaya layanan
 
             return response()->json([
                 'success' => true,
